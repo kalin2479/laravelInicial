@@ -1,0 +1,51 @@
+https://richos.gitbooks.io/laravel-5/content/capitulos/chapter10.html
+<!--
+	@section('title') => de esta manera se comunica un yield y sabe en donde debe pintar o colocar el contenido
+-->
+
+<!--
+* @yield('[nombre]','[Default]') => Crean secciones dentro de nuestra plantilla para luego rellenarlas desde el archivo o las 
+vistas que esten siendo usadas.
+* @extends('admin.template.main') => para llamar a la plantilla que vamos a utilizar
+-->
+
+Se puede escribir en caso de ser poco texto
+
+@section('title')
+	Inicio de mi Página
+@endsection
+
+ó
+@section('title','Inicio de mi Página')
+
+Templates y Partials
+
+Anteriormente hablabamos de templates y partials, describiremos un poco de como se trabaja con esta estructuras de Blade y sus beneficios:
+Templates
+
+Estos archivos como se menciona al principio del capítulo son plantillas que nos ahorran mucho código o leguaje HTML, y para usar un template se usa la sentencia:
+@extends('template')
+Claramente se tendria que sustituir la palabra template dentro de la sentencia extends por el nombre de la vista que va a funcionar como template o plantilla.
+Un template es una vista como las demás, simplemente que dentro de ella se usan otras sentencias que nos va a permitir definir areas del archivo que se van a poder sustituir mas adelante dentro de otra vista si es que lo deseamos. Para esto se ocupa la sentencia:
+@yield('nombre_seccion')
+Para declarar una seccion que se va a rellenar en otro lugar:
+@section('nombre_seccion')
+que funciona de la misma forma que yield() con la diferencia que en la seccion puedes definir HTML por defecto en caso de no definir la seccion con un nuevo HTML.
+Definiremos nuestra vista recien creada saludo.blade.php para que use un template, por defecto Laravel trae uno que se llama app.blade.php, ese es el que usaremos para este ejemplo.
+El template app por defecto tiene definida un yield llamado content que significa contenido, por lo cual la lista de pasteles que tenemos la vamos a agregar en esta parte y la vista quedaria de la siguiente forma:
+@extends('app')
+
+@section('content')
+    <h1>Lista de pasteles</h1><br>
+    @if( $pasteles->count() > 10 )
+        <h2>Hay muchos Pasteles</h2><br>
+    @endif
+    @foreach($pasteles as $pastel)
+        <h4>{{ $pastel->nombre }}</h4>
+    @endforeach
+@stop
+Ahora nuestra vista ya no tiene el encabezado HTML normal ni las etiquetas <body> ni <html>, sino que estamos diciendo que vamos a extender del template app y que el yield content lo vamos a sustituir por nuestro propio contenido, cabe mencionar que aunque en el template se uso la sentencia yield('content'), al momento de sustituirla la vamos a cambiar por section('content'), por lo cual en todas las vistas hijas del template solo se va a definir secciones y el fin de esa seccion se va a declarar con la entencia @stop.
+
+Partials
+
+Continuaremos con los partials, basicamente es lo mismo que ya hemos visto pero con una sentencia mas que se llama include('nombre.partial'), la cual esta incluyendo o incrustando un archivo de HTML, podemos hacer un simil con los use de PSR-4 o los import de Java, a diferencia de que esto lo inlcuye justo en el lugar donde lo definimos.
